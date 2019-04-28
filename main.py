@@ -36,7 +36,11 @@ source = [7,7]
 constraints = { 0:1, 3:1, 6:1 }
 
 pop = new_pop(X, constraint2config(constraints, X.shape))
-print( [fitness(a) for a in pop] )
+for i in range(0,10):
+    fits = [fitness(X,a) for a in pop]
+    most_fit = np.argmax( np.array(fits) )
+    pop = new_pop(X, pop[most_fit])
+    print(fits)
 
 '''
 plantmap = { (6,7):[1,0],(5,7):[3,0] }

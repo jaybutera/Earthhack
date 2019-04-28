@@ -15,16 +15,17 @@ def new_pop(heightmap, plantmap):
                 ry = random.randint(0,Y-1)
                 new_plantmap[(rx,ry)] = plantmap[k]
             else:
-                new_plantmap[k] = plantmap[k]
+                new_plantmap[k] = [plantmap[k][0],0]
 
         # Randomly add new coverage plants
         #
 
-        pop.append( Sim(heightmap, new_plantmap, [5,5]) )
+        pop.append(new_plantmap)
 
     return pop
 
-def fitness(sim):
+def fitness(heightmap, plantmap):
+    sim = Sim(heightmap, plantmap, [7,7])
     for i in range(0,20):
         sim.step()
 
