@@ -1,6 +1,11 @@
 import random
 from sim import *
 
+def randpoint(n,m):
+    rx = random.randint(0,n-1)
+    ry = random.randint(0,m-1)
+    return (rx,ry)
+
 def new_pop(heightmap, plantmap):
     (X,Y) = heightmap.shape
 
@@ -11,9 +16,12 @@ def new_pop(heightmap, plantmap):
         # A chance to randomly re-assign plant locations
         for k in plantmap.keys():
             if random.uniform(0,1) < .2:
-                rx = random.randint(0,X-1)
-                ry = random.randint(0,Y-1)
-                new_plantmap[(rx,ry)] = plantmap[k]
+                done = False
+                while not done:
+                    r = randpoint(X,Y)
+                    if r not in plantmap:
+                        new_plantmap[r] = plantmap[k]
+                        done = True
             else:
                 new_plantmap[k] = [plantmap[k][0],0]
 
