@@ -1,15 +1,17 @@
 import scipy.ndimage as ndimage
 import numpy as np
 import copy
+import plantDb as pb
 
 class Sim(object):
-    def __init__(self, bmp, source):
+    def __init__(self, bmp, plantmap, source):
         self.heightmap      = bmp
         self.watermap       = np.zeros(bmp.shape)
         self.virt_watermap  = np.zeros(bmp.shape)
-        self.N = bmp.shape[0]
-        self.M = bmp.shape[1]
-        self.source = source
+        self.plantmap       = plantmap
+        self.source         = source
+        self.N              = bmp.shape[0]
+        self.M              = bmp.shape[1]
 
         self.runoff_ratio = 0.6
         self.evap_rate    = 0.9
@@ -21,7 +23,22 @@ class Sim(object):
             return
 
         # Some water evaporates
-        self.virt_watermap[x,y] *= self.evap_rate
+        if (x,y) in self.plantmap:
+            p_id                    = self.plantmap[(x,y)][0]
+            plant_ev                = pb.plantdb[p_id][3]
+            possible_evap           = self.virt_watermap[x,y] - plant_ev
+            self.virt_watermap[x,y] = possible_evap * self.evap_rate + plant_ev
+        else:
+            self.virt_watermap[x,y] *= self.evap_rate
+
+        # Some is absorbed (if there is a plant)
+        if (x,y) in self.plantmap:
+            p_id = self.plantmap[(x,y)][0]
+            diff = self.virt_watermap[x,y] - pb.plantdb[p_id][2]
+            # Absorb by rate amount
+            self.virt_watermap[x,y] = max(diff,0)
+            # Adjust plant thirst
+            self.plantmap[(x,y)][1] -= diff #TODO: This is not correct
 
         # Some runs off
         runoff_amount = self.virt_watermap[x,y] * self.runoff_ratio

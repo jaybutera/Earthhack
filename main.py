@@ -19,16 +19,19 @@ bmp = b[:,:,0]
 print(b.shape)
 '''
 
-X = np.empty((8,8))
+shape = (8,8)
+X = np.empty(shape)
 for i in range(0,8):
     for j in range(0,8):
         X[i,j] = i*j
 print(X)
 #X = np.arange(8*8).reshape((8,8))
-source = [3,7]
+source = [7,7]
 
-s = Sim(X, source)
-for i in range(0,3):
+plantmap = { (6,7):[1,0] }
+
+s = Sim(X, plantmap, source)
+for i in range(0,6):
     s.step()
     print(s.watermap)
     plt.imshow(s.watermap, norm=plt.Normalize(vmin=0, vmax=np.max(s.watermap)), cmap='gray')
