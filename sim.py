@@ -27,7 +27,7 @@ class Sim(object):
         runoff_amount = self.virt_watermap[x,y] * self.runoff_ratio
         lower_cells   = self._get_lower_cells(x,y)
         for i in lower_cells:
-            self.virt_watermap[i] += (runoff_amount / lower_cells.size)
+            self.virt_watermap[i[0],i[1]] += (runoff_amount / lower_cells.size)
 
         self.virt_watermap[x,y] -= runoff_amount
 
@@ -36,6 +36,8 @@ class Sim(object):
         idxs  = np.empty(shape=[0,2], dtype=int)
         if x > 0:
             idxs=np.append(idxs, [[x-1,y]], axis=0)
+        if y > 0:
+            idxs=np.append(idxs, [[x,y-1]], axis=0)
         if x > 0 and y > 0:
             idxs=np.append(idxs, [[x-1,y-1]], axis=0)
         if y > 0 and x < self.N-1:
@@ -49,8 +51,6 @@ class Sim(object):
         if y < self.M-1 and x > 0:
             idxs=np.append(idxs, [[x-1,y+1]], axis=0)
 
-        print('idxs')
-        print(idxs)
         # Get height values of those indices
         heights = [self.heightmap[i[0],i[1]] for i in idxs]
 
