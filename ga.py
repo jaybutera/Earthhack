@@ -24,8 +24,12 @@ def new_pop(heightmap, plantmap):
 
     return pop
 
+def get_source(heightmap):
+    maxims = np.where(heightmap == heightmap.max())
+    return (maxims[0][0], maxims[1][0])
+
 def fitness(heightmap, plantmap):
-    sim = Sim(heightmap, plantmap, [7,7])
+    sim = Sim(heightmap, plantmap, get_source(heightmap))
     for i in range(0,20):
         sim.step()
 
