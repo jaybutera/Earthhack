@@ -10,7 +10,7 @@ def new_pop(heightmap, plantmap):
         new_plantmap = {}
         # A chance to randomly re-assign plant locations
         for k in plantmap.keys():
-            if random.uniform(0,1) < .3:
+            if random.uniform(0,1) < .2:
                 rx = random.randint(0,X-1)
                 ry = random.randint(0,Y-1)
                 new_plantmap[(rx,ry)] = plantmap[k]
