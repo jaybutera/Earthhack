@@ -13,7 +13,7 @@ class Sim(object):
         self.N              = bmp.shape[0]
         self.M              = bmp.shape[1]
 
-        self.runoff_ratio = 0.6
+        self.runoff_ratio = 0.8
         self.evap_rate    = 0.9
         self.min_eval     = 0.01
 
@@ -38,7 +38,7 @@ class Sim(object):
             # Absorb by rate amount
             self.virt_watermap[x,y] = max(diff,0)
             # Adjust plant thirst
-            self.plantmap[(x,y)][1] -= diff #TODO: This is not correct
+            self.plantmap[(x,y)][1] -= pb.plantdb[p_id][2]#diff #TODO: This is not correct
 
         # Some runs off
         runoff_amount = self.virt_watermap[x,y] * self.runoff_ratio
@@ -73,7 +73,7 @@ class Sim(object):
 
         # Return indices with height < h
         h = self.heightmap[x,y]
-        return np.array([i[1] for i in enumerate(idxs) if heights[i[0]] < h])
+        return np.array([i[1] for i in enumerate(idxs) if heights[i[0]] <= h])
 
     def update(self):
         self.watermap = copy.deepcopy(self.virt_watermap)

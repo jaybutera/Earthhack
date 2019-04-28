@@ -1,3 +1,4 @@
+import matplotlib.markers as mark
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import numpy as np
@@ -27,11 +28,11 @@ def get_source(heightmap):
     maxims = np.where(heightmap == heightmap.max())
     return (maxims[0][0], maxims[1][0])
 
-'''
-im = Image.open('./tmp.png')
+im = Image.open('./kinect.png')
 b = np.array(im)
-bmp = b[:,:,0]
-print(b.shape)
+X = b[:,:,0]
+print(X.shape)
+print(X)
 '''
 
 shape = (8,8)
@@ -40,6 +41,7 @@ for i in range(0,8):
     for j in range(0,8):
         X[i,j] = i*j
 print(X)
+'''
 
 # plant-id : quantity
 constraints = { 0:10, 3:5, 6:1 }
@@ -51,7 +53,7 @@ fitness_history  = []
 alltime_best_fit = -10000
 alltime_best_g   = None
 
-for i in range(0,10):
+for i in range(0,4):
     fits     = [fitness(X,a) for a in pop]
     most_fit = np.argmax( np.array(fits) )
     top_g    = pop[most_fit]
@@ -70,13 +72,25 @@ for i in range(0,10):
 
 
 # Plot shit
-#plt.plot(fitness_history)
-#plt.show()
+plt.plot(fitness_history)
+plt.show()
 #plt.imshow(X, norm=plt.Normalize(vmin=0, vmax=np.max(X)), cmap='gray')
+
+marker_map = {
+    0: mark.MarkerStyle(marker='o'),
+    3: mark.MarkerStyle(marker='^'),
+}
 
 plt.contourf(X, \
         cmap=cm.PRGn, \
+        origin='upper', \
         norm=cm.colors.Normalize(vmax=X.max(), vmin=X.min()))
+
+# Plot crop points
 l = pm2arr(alltime_best_g)
-plt.scatter(l[0],l[1])
+plt.scatter(l[1],l[0])
+
+# Plot water source
+source = get_source(X)
+plt.scatter(np.array([source[1]]),np.array([source[0]]), marker=mark.MarkerStyle(marker='X'))
 plt.show()

@@ -29,7 +29,7 @@ def new_pop(heightmap, plantmap):
 
         # Randomly add new coverage plants
         #
-        if random.uniform(0,1) < .1:
+        if random.uniform(0,1) < .02:
             r               = uniquepoint(X,Y,plantmap)
             new_plantmap[r] = [np.random.choice([9,10,11,12]), 0]
 
@@ -46,4 +46,4 @@ def fitness(heightmap, plantmap):
     for i in range(0,20):
         sim.step()
 
-    return -sum( [v[1] for v in sim.plantmap.values()] )
+    return sum( [v[1] for v in sim.plantmap.values()] )
